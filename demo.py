@@ -1,17 +1,17 @@
 """
-Warm-up demo for reference-guided PCG denoising.
+Demo for reference-guided PCG denoising.
 
 Pipeline:
-  1. Load mic_speaking.wav and mic_walking.wav.
+  1. Load a noisy wearable-mic recording (mic_walking.wav or mic_speaking.wav)
+     as the observation y, and the quiet-posture recording (mic_sit_quiet.wav)
+     as the reference z.
   2. Band-pass to 25-150 Hz (the PCG band) and resample to FS_TARGET.
-  3. Take a NOISY_FILE as observation y, the OTHER one as the reference z
-     (warm-up only -- in production, z would be a clinically clean baseline).
-  4. Phase-align z to y by cross-correlation with optimal scale.
-  5. Run MM and GD solvers; plot waveforms, spectrograms, objective curves.
+  3. Phase-align z to y by cross-correlation with optimal scale.
+  4. Run MM and GD solvers; plot waveforms, spectrograms, objective curves.
 
 Usage:
-    python demo.py                         # default: noisy=data/mic_walking.wav, ref=data/mic_speaking.wav
-    python demo.py --noisy data/mic_speaking.wav --ref data/mic_walking.wav
+    python demo.py                         # default: noisy=data/mic_walking.wav, ref=data/mic_sit_quiet.wav
+    python demo.py --noisy data/mic_speaking.wav --ref data/mic_sit_quiet.wav
     python demo.py --no-ref                # disable reference term (lambda_r=0)
 """
 
@@ -74,8 +74,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--noisy", default="data/mic_walking.wav",
                     help="WAV used as the noisy observation y")
-    ap.add_argument("--ref", default="data/mic_speaking.wav",
-                    help="WAV used as the reference z (warm-up proxy)")
+    ap.add_argument("--ref", default="data/mic_sit_quiet.wav",
+                    help="WAV used as the quiet-posture reference z")
     ap.add_argument("--no-ref", action="store_true",
                     help="set lambda_r = 0 (skip reference attraction term)")
     ap.add_argument("--lambda-g", type=float, default=0.05)
